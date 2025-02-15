@@ -1,17 +1,17 @@
--- Books Table [cite: 11]
+-- Books Table
 CREATE TABLE `Books` (
    `ISBN` VARCHAR(20) PRIMARY KEY,
    `Title` VARCHAR(255) NOT NULL,
    `Price` DECIMAL(10,2) NOT NULL
 );
 
--- Authors Table [cite: 11]
+-- Authors Table
 CREATE TABLE `Authors` (
    `AuthorID` INT PRIMARY KEY,
    `Name` VARCHAR(255) NOT NULL
 );
 
--- BookAuthors Table (Associative Entity) [cite: 11]
+-- BookAuthors Table (Associative Entity)
 CREATE TABLE `BookAuthors` (
    `ISBN` VARCHAR(20),
    `AuthorID` INT,
@@ -20,14 +20,14 @@ CREATE TABLE `BookAuthors` (
    FOREIGN KEY (`AuthorID`) REFERENCES `Authors`(`AuthorID`)
 );
 
--- Customers Table [cite: 11]
+-- Customers Table
 CREATE TABLE `Customers` (
    `CustomerID` INT PRIMARY KEY,
    `Name` VARCHAR(255) NOT NULL,
    `Email` VARCHAR(255) NOT NULL
 );
 
--- Orders Table [cite: 11]
+-- Orders Table
 CREATE TABLE `Orders` (
    `OrderID` INT PRIMARY KEY,
    `CustomerID` INT,
@@ -35,7 +35,7 @@ CREATE TABLE `Orders` (
    FOREIGN KEY (`CustomerID`) REFERENCES `Customers`(`CustomerID`)
 );
 
--- OrderDetails Table [cite: 11]
+-- OrderDetails Table
 CREATE TABLE `OrderDetails` (
    `OrderID` INT,
    `ISBN` VARCHAR(20),
