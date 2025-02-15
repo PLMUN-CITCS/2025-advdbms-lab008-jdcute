@@ -1,50 +1,60 @@
--- Create Database
-CREATE DATABASE IF NOT EXISTS BookstoreDB;
-USE BookstoreDB;
+CREATE DATABASE `BookstoreDB`;
+   
+   ```
+   - Use Database: Write the SQL command to select the BookstoreDB database for use.
+   ```SQL
+   USE `BookstoreDB`;
+   
+   ```
+   - Create Tables: For each entity (Books, Authors, BookAuthors, Customers, Orders, OrderDetails), write a CREATE TABLE statement. 
+      - Define appropriate data types for each attribute.
+      - Declare primary keys for each table. Use AUTO_INCREMENT for IDs where appropriate (Authors, Customers, Orders).
+      - For the BookAuthors table, create a composite primary key using both ISBN and AuthorID.
+      - Define foreign key constraints to enforce referential integrity. For example, in the Orders table, the CustomerID should be a foreign key referencing the Customers table's CustomerID. Do this for all appropriate relationships. The BookAuthors table will have two foreign keys.
+   ```SQL
+   -- Books Table [cite: 11]
+   CREATE TABLE `Books` (
+      `ISBN` VARCHAR(20) PRIMARY KEY,
+      `Title` VARCHAR(255) NOT NULL,
+      `Price` DECIMAL(10,2) NOT NULL
+   );
 
--- Create Books Table
-CREATE TABLE Books (
-    ISBN VARCHAR(20) PRIMARY KEY,
-    Title VARCHAR(255) NOT NULL,
-    Price DECIMAL(10,2) NOT NULL
-);
+   -- Authors Table [cite: 11]
+   CREATE TABLE `Authors` (
+      `AuthorID` INT PRIMARY KEY,
+      `Name` VARCHAR(255) NOT NULL
+   );
 
--- Create Authors Table
-CREATE TABLE Authors (
-    AuthorID INT AUTO_INCREMENT PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL
-);
+   -- BookAuthors Table (Associative Entity) [cite: 11]
+   CREATE TABLE `BookAuthors` (
+      `ISBN` VARCHAR(20),
+      `AuthorID` INT,
+      PRIMARY KEY (`ISBN`, `AuthorID`),
+      FOREIGN KEY (`ISBN`) REFERENCES `Books`(`ISBN`),
+      FOREIGN KEY (`AuthorID`) REFERENCES `Authors`(`AuthorID`)
+   );
 
--- Create BookAuthors Table (Many-to-Many Relationship)
-CREATE TABLE BookAuthors (
-    ISBN VARCHAR(20),
-    AuthorID INT,
-    PRIMARY KEY (ISBN, AuthorID),
-    FOREIGN KEY (ISBN) REFERENCES Books`(ISBN`) ON DELETE CASCADE,
-    FOREIGN KEY (AuthorID) REFERENCES Authors`(AuthorID`) ON DELETE CASCADE
-);
+   -- Customers Table [cite: 11]
+   CREATE TABLE `Customers` (
+      `CustomerID` INT PRIMARY KEY,
+      `Name` VARCHAR(255) NOT NULL,
+      `Email` VARCHAR(255) NOT NULL
+   );
 
--- Create Customers Table
-CREATE TABLE Customers (
-    CustomerID INT AUTO_INCREMENT PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL,
-    Email VARCHAR(255) NOT NULL UNIQUE
-);
+   -- Orders Table [cite: 11]
+   CREATE TABLE `Orders` (
+      `OrderID` INT PRIMARY KEY,
+      `CustomerID` INT,
+      `OrderDate` DATE NOT NULL,
+      FOREIGN KEY (`CustomerID`) REFERENCES `Customers`(`CustomerID`)
+   );
 
--- Create Orders Table
-CREATE TABLE Orders (
-    OrderID INT AUTO_INCREMENT PRIMARY KEY,
-    CustomerID INT,
-    OrderDate DATE NOT NULL,
-    FOREIGN KEY (CustomerID) REFERENCES Customers`(CustomerID`) ON DELETE CASCADE
-);
-
--- Create OrderDetails Table (Order Items)
-CREATE TABLE OrderDetails (
-    OrderID INT,
-    ISBN VARCHAR(20),
-    Quantity INT NOT NULL CHECK (Quantity > 0),
-    PRIMARY KEY (OrderID, ISBN),
-    FOREIGN KEY (OrderID) REFERENCES Orders`(OrderID`) ON DELETE CASCADE,
-    FOREIGN KEY (ISBN) REFERENCES Books`(ISBN`) ON DELETE CASCADE
-);
+   -- OrderDetails Table [cite: 11]
+   CREATE TABLE `OrderDetails` (
+      `OrderID` INT,
+      `ISBN` VARCHAR(20),
+      `Quantity` INT NOT NULL,
+      PRIMARY KEY (`OrderID`, `ISBN`),
+      FOREIGN KEY (`OrderID`) REFERENCES `Orders`(`OrderID`),
+      FOREIGN KEY (`ISBN`) REFERENCES `Books`(`ISBN`)
+   );
